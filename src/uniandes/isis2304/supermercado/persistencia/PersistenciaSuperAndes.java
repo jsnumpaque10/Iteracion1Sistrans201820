@@ -1055,7 +1055,7 @@ public class PersistenciaSuperAndes
 	 * @param idCliente - Identificador del cliente
 	 * @return El objeto CarritoCompras actualizado. null si ocurre alguna Excepciï¿½n
 	 */
-	public long abandonarCarritoCompras(int pIdSucursal, int pIdCarrito, int pIdProducto, int pIdEstante, int pCantidad)
+	public long abandonarCarritoCompras(int pIdSucursal, int pIdCarrito)
 	{
 		PersistenceManager pm = pmf.getPersistenceManager();
 		Transaction tx = pm.currentTransaction();
@@ -1063,12 +1063,9 @@ public class PersistenciaSuperAndes
 		{
 			tx.begin();
 			long resp = sqlCarritoCompras.actualizarAbandonoSI(pm, pIdSucursal, pIdCarrito);	
-			long resp2 = sqlSeleccionProductos.devolverSeleccionProductos(pm, pIdProducto, pIdCarrito);
-			long resp3 = sqlAlbergan.adicionarAlbergan(pm, pIdProducto, pIdEstante, pCantidad);
-			long resp4 = sqlCarritoCompras.actualizarAbandonoNO(pm, pIdSucursal, pIdCarrito);
-			long resp5 = sqlCarritoCompras.actualizarDisponibilidad(pm, pIdSucursal, pIdCarrito);
+			long resp2 = sqlCarritoCompras.actualizarDisponibilidad(pm, pIdSucursal, pIdCarrito);
 			tx.commit();
-			return resp + resp2 + resp3 + resp4 +resp5;
+			return resp + resp2;
 		}
 		catch(Exception e)
 		{
@@ -1083,7 +1080,7 @@ public class PersistenciaSuperAndes
 	 * Adiciona entradas al log de la aplicaciï¿½n
 	 * @return El objeto Albergan actualizado. null si ocurre alguna Excepciï¿½n
 	 */
-	public long recolectarProductosAbandonados(int pIdProducto, int pIdEstante, int pCantidad)
+	public long recolectarProductosAbandonados(int pIdSucursal, int pIdCarrito, int pIdProducto, int pIdEstante, int pCantidad)
 	{
 		PersistenceManager pm = pmf.getPersistenceManager();
 		Transaction tx = pm.currentTransaction();
@@ -1108,6 +1105,13 @@ public class PersistenciaSuperAndes
 		}
 	}
 	
+	/**
+	 * Elimina todas las tuplas de todas las tablas de la base de datos de SuperAndes
+	 * Crea y ejecuta las sentencias SQL para cada tabla de la base de datos - EL ORDEN ES IMPORTANTE 
+	 * @return Un arreglo con 17 números que indican el número de tuplas borradas en las tablas ALBERGAN, ALMACENAN, BODEGA,
+	 * CARRITOCOMPRAS, CLIENTE, ESTANTE, FACTURA, INVENTARIO, PEDIDO, PRODUCTO, PROMOCION, PROMOCIONES, PROVEEDOR, PROVEEN,
+	 * SELECCIONPRODUCTOS, SUCURSAL, RIPOPRODUCTO respectivamente
+	 */
 	public long[] limpiarSuperAndes()
 	{
 		PersistenceManager pm = pmf.getPersistenceManager();

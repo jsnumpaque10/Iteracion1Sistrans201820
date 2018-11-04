@@ -37,12 +37,12 @@ class SQLFactura
 	}
 	
 	/**
-	 * 
-	 * @param idFactura
-	 * @param idCarritoCompras
-	 * @param total
-	 * @param fecha
-	 * @return
+	 * Crea y ejecuta la sentencia SQL para adicionar un FACTURA a la base de datos de SuperAndes
+	 * @param idFactura - Identificador de la factura
+	 * @param idCarritoCompras - Identificador del carrito asociado
+	 * @param total - Precio total relacionado a la factura
+	 * @param fecha - fecha de facturación
+	 * @return El número de tuplas insertadas
 	 */
 	public long generarFactura(PersistenceManager pm, int idFactura, int idCarritoCompras, int idCliente, double total, Timestamp fecha)
 	{

@@ -92,7 +92,12 @@ public class SQLCarritoCompras
 		return (long) sql.executeUnique();
 	}
 	
-	
+	/**
+	 * Crea y ejecuta la sentencia SQL para encontrar los carritos abandonados de los CARRITOCOMPRAS de la 
+	 * base de datos de SuperAndes
+	 * @param pm - El manejador de persistencia
+	 * @return Una lista de objetos CARRITOCOMPRAS
+	 */
 	public List<CarritoCompras> darCarritosAbandonados(PersistenceManager pm)
 	{
 		Query sql = pm.newQuery(SQL, "SELECT id FROM " +psa.darTablaCarritoCompras()+" WHERE abandonado = 'SI'");

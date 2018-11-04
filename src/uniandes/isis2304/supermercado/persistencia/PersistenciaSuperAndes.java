@@ -1,9 +1,5 @@
 package uniandes.isis2304.supermercado.persistencia;
-import java.math.BigDecimal;
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -439,6 +435,42 @@ public class PersistenciaSuperAndes
 			return je.getNestedExceptions() [0].getMessage();
 		}
 		return resp;
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Productos
+	 * @return La lista de objetos PRODUCTO, construidos con base en las tuplas de la tabla PRODUCTO
+	 */
+	public List<Producto> darProductos()
+	{
+		return sqlProducto.darProductos(pmf.getPersistenceManager());
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Promocion
+	 * @return La lista de objetos PROMOCION, construidos con base en las tuplas de la tabla PROMOCION
+	 */
+	public List<Promocion> darPromociones()
+	{
+		return sqlPromocion.darPromociones(pmf.getPersistenceManager());
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Proveedor
+	 * @return La lista de objetos PROMOCION, construidos con base en las tuplas de la tabla PROVEEDOR
+	 */
+	public List<Proveedor> darProveedor()
+	{
+		return sqlProveedor.darProveedores(pmf.getPersistenceManager());
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla SeleccionProductos
+	 * @return La lista de objetos SELECCIONPRODUCTOS, construidos con base en las tuplas de la tabla SELECCIONPRODUCTOS
+	 */
+	public List<SeleccionProductos> darSeleccionProductos()
+	{
+		return sqlSeleccionProductos.darSeleccionProductos(pmf.getPersistenceManager());
 	}
 	
 	/**
@@ -907,7 +939,7 @@ public class PersistenciaSuperAndes
 	 * @param pFechaVisista
 	 * @return El objeto CarritoCompras adicionado. null si ocurre alguna Excepciï¿½n
 	 */
-	public long solicitarCarritoCompras(int pIdSucursal, int pIdCliente, Timestamp pFechaVisista)
+	public CarritoCompras solicitarCarritoCompras(int pIdSucursal, int pIdCliente, Timestamp pFechaVisista)
 	{
 		PersistenceManager pm = pmf.getPersistenceManager();
 		Transaction tx = pm.currentTransaction();
@@ -919,12 +951,20 @@ public class PersistenciaSuperAndes
 			String pAbandonado = "NO";
 			long resp = sqlCarritoCompras.solicitarCarritoCompras(pm, idCarrito, pIdSucursal, pIdCliente, pDisponibilidad, pAbandonado, pFechaVisista);
 			tx.commit();
-			return resp;
+			return new CarritoCompras(idCarrito, pIdSucursal, pIdCliente, pDisponibilidad, pAbandonado);
 		}
 		catch (Exception e) 
 		{
 			log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
-        	return -1;
+        	return null;
+		}
+		finally 
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
 		}
 	}
 	
@@ -1027,7 +1067,7 @@ public class PersistenciaSuperAndes
 	 * @param pFecha
 	 * @return El objeto Factura insertado. null si ocurre alguna Excepciï¿½n
 	 */
-	public long pagarCompra(int pIdSucursal, int pIdCliente, int pIdProducto, int pCantidad, int pIdCarritoCompras, int pTotal, Timestamp pFecha)
+	public Factura pagarCompra(int pIdSucursal, int pIdCliente, int pIdProducto, int pCantidad, int pIdCarritoCompras, int pTotal, Timestamp pFecha)
 	{
 		PersistenceManager pm = pmf.getPersistenceManager();
 		Transaction tx = pm.currentTransaction();
@@ -1039,12 +1079,25 @@ public class PersistenciaSuperAndes
 			long resp2 = sqlInventario.disminuirInventario(pm, pIdSucursal, pIdProducto, pCantidad);
 			long resp3 = sqlCarritoCompras.actualizarDisponibilidad(pm, pIdSucursal, pIdCarritoCompras);
 			tx.commit();
-			return resp + resp2 + resp3;
+			
+			log.trace ("Inserción de Factura: " +pIdFactura+", "+pIdCarritoCompras+", "+pIdCliente+", "+pTotal+", "+pFecha+", tuplas insertadas: "+resp); 
+			log.trace("Actualización de Inventario: "+pIdSucursal+", "+pIdProducto+", "+pCantidad+", tuplas actualizadas: "+resp2);
+			log.trace("Actualización de Carrito: "+pIdSucursal+", "+pIdCarritoCompras+", tuplas insertadas: "+resp3);
+			
+			return new Factura(pIdFactura, pIdCarritoCompras, pIdCliente, pTotal, pFecha);
 		}
 		catch(Exception e)
 		{
 			log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
-        	return -1;	
+        	return null;	
+		}
+		finally 
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
 		}
 	}
 	
@@ -1082,28 +1135,36 @@ public class PersistenciaSuperAndes
 	 * Adiciona entradas al log de la aplicaciï¿½n
 	 * @return El objeto Albergan actualizado. null si ocurre alguna Excepciï¿½n
 	 */
-	public long recolectarProductosAbandonados(int pIdSucursal, int pIdProducto, int pIdEstante, int pCantidad)
+	public Albergan recolectarProductosAbandonados(int pIdSucursal, int pIdProducto, int pIdEstante, int pCantidad)
 	{
 		PersistenceManager pm = pmf.getPersistenceManager();
 		Transaction tx = pm.currentTransaction();
 		try
 		{
-			long resp = 0;
-			long resp2 = 0;
-			
 			for(CarritoCompras carrito : sqlCarritoCompras.darCarritosAbandonados(pm))
 			{
 				tx.begin();
-				resp = sqlSeleccionProductos.devolverSeleccionProductos(pm, pIdProducto, carrito.id);
-				resp2 = sqlAlbergan.adicionarAlbergan(pm, pIdProducto, pIdEstante, pCantidad);
+				long resp = sqlSeleccionProductos.devolverSeleccionProductos(pm, pIdProducto, carrito.id);
+				long resp2 = sqlAlbergan.adicionarAlbergan(pm, pIdEstante, pIdProducto, pCantidad);
 				tx.commit();
+				
+				log.trace("Eliminacion de SeleccionProductos: "+pIdProducto+", "+carrito.id+", tuplas eliminadas: "+resp);
+				log.trace ("Inserción de Albergan: "+pIdEstante+", "+pIdProducto+", "+pCantidad+", tuplas insertadas: "+resp2);
 			}
-			return resp + resp2;
+			return new Albergan(pIdEstante, pIdProducto, pCantidad);
 		}
 		catch (Exception e) 
 		{
 			log.error("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
-			return -1;
+			return null;
+		}
+		finally 
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
 		}
 	}
 	

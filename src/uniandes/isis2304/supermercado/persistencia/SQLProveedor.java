@@ -1,7 +1,12 @@
 package uniandes.isis2304.supermercado.persistencia;
 
+import java.util.List;
+
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
+
+import uniandes.isis2304.supermercados.negocio.Promocion;
+import uniandes.isis2304.supermercados.negocio.Proveedor;
 
 class SQLProveedor {
 
@@ -37,5 +42,17 @@ class SQLProveedor {
         return (long) q.executeUnique();     
 	}
 	
+	/**
+	 * Crea y ejecuta la sentencia SQL para encontrar la información de la Proveedor de la 
+	 * base de datos de SuperAndes
+	 * @param pm - El manejador de persistencia
+	 * @return Una lista de objetos Proveedor
+	 */
+	public List<Proveedor> darProveedores(PersistenceManager pm)
+	{
+		Query q = pm.newQuery(SQL, "SELECT * FROM " + ps.darTablaProveedor());
+		q.setResultClass(Proveedor.class);
+		return (List<Proveedor>) q.executeList();
+	}
 	
 }

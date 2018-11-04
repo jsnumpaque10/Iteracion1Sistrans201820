@@ -9,6 +9,8 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
 import uniandes.isis2304.supermercado.persistencia.*;
+import uniandes.isis2304.supermercados.negocio.Producto;
+import uniandes.isis2304.supermercados.negocio.Promocion;
 
 class SQLPromocion 
 {
@@ -84,5 +86,18 @@ class SQLPromocion
 		Query sql = pm.newQuery(SQL, "DELETE FROM "+psa.darTablaPromocion() + "WHERE cantidad_productos = 0");
 		sql.setParameters(idSucursal);
 		return (long) sql.executeUnique();
+	}
+	
+	/**
+	 * Crea y ejecuta la sentencia SQL para encontrar la información de la Promocion de la 
+	 * base de datos de SuperAndes
+	 * @param pm - El manejador de persistencia
+	 * @return Una lista de objetos Promocion
+	 */
+	public List<Promocion> darPromociones(PersistenceManager pm)
+	{
+		Query q = pm.newQuery(SQL, "SELECT * FROM " + psa.darTablaPromocion());
+		q.setResultClass(Promocion.class);
+		return (List<Promocion>) q.executeList();
 	}
 }

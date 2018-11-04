@@ -1,11 +1,12 @@
 package uniandes.isis2304.supermercados.negocio;
 
 import java.sql.Timestamp;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import com.google.gson.JsonObject;
-
 import uniandes.isis2304.supermercado.persistencia.PersistenciaSuperAndes;
 
 public class SuperAndes
@@ -87,7 +88,76 @@ public class SuperAndes
 	{
 		psa.cerrarUnidadPersistencia();
 	}
-
+	
+	/**
+	 * Encuentra todos los productos en SuperAndes y los devuelve como una lista de VOProducto
+	 * Adiciona entradas al log de la aplicación
+	 * @return Una lista de objetos VOProducto con todos los productos que conoce la aplicación, llenos con su información básica
+	 */
+	public List<VOProducto> darVOProducto()
+	{
+		log.info ("Generando los VO de Producto");        
+        List<VOProducto> voTipos = new LinkedList<VOProducto> ();
+        for (Producto p : psa.darProductos())
+        {
+        	voTipos.add (p);
+        }
+        log.info ("Generando los VO de Producto: " + voTipos.size() + " existentes");
+        return voTipos;
+	}
+	
+	
+	/**
+	 * Encuentra toda la promocion en la base de datos de SuperAndes y los devuelve como una lista de VOPromocion
+	 * Adiciona entradas al log de la aplicación
+	 * @return Una lista de objetos VOPromocion con toda la promocion que conoce la aplicación, llenos con su información básica
+	 */
+	public List<VOPromocion> darVOPromocion()
+	{
+		log.info ("Generando los VO de Promocion");        
+        List<VOPromocion> voTipos = new LinkedList<VOPromocion> ();
+        for (Promocion p : psa.darPromociones())
+        {
+        	voTipos.add (p);
+        }
+        log.info ("Generando los VO de Promocion: " + voTipos.size() + " existentes");
+        return voTipos;
+	}
+	
+	/**
+	 * Encuentra toda la promocion en la base de datos de SuperAndes y los devuelve como una lista de VOProveedor
+	 * Adiciona entradas al log de la aplicación
+	 * @return Una lista de objetos VOProveedor con toda la promocion que conoce la aplicación, llenos con su información básica
+	 */
+	public List<VOProveedor> darVOProveedor()
+	{
+		log.info ("Generando los VO de Proveedor");        
+        List<VOProveedor> voTipos = new LinkedList<VOProveedor> ();
+        for (Proveedor p : psa.darProveedor())
+        {
+        	voTipos.add (p);
+        }
+        log.info ("Generando los VO de Proveedor: " + voTipos.size() + " existentes");
+        return voTipos;
+	}
+	
+	/**
+	 * Encuentra toda la promocion en la base de datos de SuperAndes y los devuelve como una lista de VOSeleccionProductos
+	 * Adiciona entradas al log de la aplicación
+	 * @return Una lista de objetos VOSeleccionProductos con toda la promocion que conoce la aplicación, llenos con su información básica
+	 */
+	public List<VOSeleccionProductos> darVOSeleccionProductos()
+	{
+		log.info ("Generando los VO de Seleccion Productos");        
+        List<VOSeleccionProductos> voTipos = new LinkedList<VOSeleccionProductos> ();
+        for (SeleccionProductos sp : psa.darSeleccionProductos())
+        {
+        	voTipos.add (sp);
+        }
+        log.info ("Generando los VO de SeleccionProductos: " + voTipos.size() + " existentes");
+        return voTipos;
+	}
+	
 	public Cliente adicionarCliente(int idCliente, String nombre, String correo, String ciudad, String direccion) 
 	{
 		log.info("Adicionando cliente con nombre : " + nombre);
@@ -187,9 +257,9 @@ public class SuperAndes
 		return resp;
 	}
 
-	public long solicitarCarritoCompras(int pIdSucursal, int pIdCliente, Timestamp pFechaVisista)
+	public CarritoCompras solicitarCarritoCompras(int pIdSucursal, int pIdCliente, Timestamp pFechaVisista)
 	{
-		long resp = psa.solicitarCarritoCompras(pIdSucursal, pIdCliente, pFechaVisista);
+		CarritoCompras resp = psa.solicitarCarritoCompras(pIdSucursal, pIdCliente, pFechaVisista);
 		return resp;
 	}
 
@@ -204,5 +274,17 @@ public class SuperAndes
 	{
 		long resp = psa.devolverCantidadProductosDelCarrito(pIdProducto, pIdCarrtioCompras, pIdEstante, pCantidad);
 		return resp;
+	}
+	
+	/**
+	 * Elimina todas las tuplas de todas las tablas de la base de datos de SuperAndes
+	 * @return Un arreglo con 17 números que indican el número de tuplas borradas en las tablas
+	 */
+	public long [] limpiarSuperAndes()
+	{
+        log.info ("Limpiando la BD de SuperAndes");
+        long [] borrrados = psa.limpiarSuperAndes();	
+        log.info ("Limpiando la BD de SuperAndes: Listo!");
+        return borrrados;
 	}
 }

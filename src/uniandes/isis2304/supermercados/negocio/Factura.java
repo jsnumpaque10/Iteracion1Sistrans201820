@@ -53,7 +53,7 @@ public class Factura implements VOFactura
 		fecha = new Timestamp(0);
 	}
 	
-	public Factura (int pId, int pIdCarritoCompras, int pIdCliente, Double pTotal, Timestamp pFecha)
+	public Factura (int pId, int pIdCarritoCompras, int pIdCliente, double pTotal, Timestamp pFecha)
 	{
 		this.id=pId;
 		this.idCarritoCompras = pIdCarritoCompras;

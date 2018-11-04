@@ -56,6 +56,7 @@ import com.google.gson.JsonObject;
 
 import com.google.gson.stream.JsonReader;
 
+import uniandes.isis2304.supermercados.negocio.CarritoCompras;
 import uniandes.isis2304.supermercados.negocio.SuperAndes;
 
 import uniandes.isis2304.supermercados.negocio.VOBodega;
@@ -501,9 +502,9 @@ public class InterfazSupermercadoApp extends JFrame implements ActionListener
 
 				Timestamp fecha = new Timestamp(System.currentTimeMillis());
 
-				long tb = superAndes.solicitarCarritoCompras(idCliente, idSucursal, fecha);
+				CarritoCompras tb = superAndes.solicitarCarritoCompras(idCliente, idSucursal, fecha);
 
-				if (tb == -1)
+				if (tb == null)
 
 				{
 

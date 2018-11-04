@@ -1,22 +1,26 @@
 package uniandes.isis2304.supermercado.tests;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
 import java.io.FileReader;
 import java.util.List;
+
 import javax.swing.JOptionPane;
+
 import org.apache.log4j.Logger;
 import org.junit.Test;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
-import uniandes.isis2304.supermercados.negocio.SuperAndes;
-import uniandes.isis2304.supermercados.negocio.VOProducto;
 
-public class ProductoTest 
+import uniandes.isis2304.supermercados.negocio.SuperAndes;
+import uniandes.isis2304.supermercados.negocio.VOProveedor;
+
+public class ProveedorTest 
 {
 	/* ****************************************************************
 	 * 			Constantes
@@ -24,7 +28,7 @@ public class ProductoTest
 	/**
 	 * Logger para escribir la traza de la ejecución
 	 */
-	private static Logger log = Logger.getLogger(ProductoTest.class.getName());
+	private static Logger log = Logger.getLogger(ProveedorTest.class.getName());
 	
 	/**
 	 * Ruta al archivo de configuración de los nombres de tablas de la base de datos: La unidad de persistencia existe y el esquema de la BD también
@@ -45,7 +49,7 @@ public class ProductoTest
     private SuperAndes superAndes;
     
     /* ****************************************************************
-	 * 			Métodos de prueba para la tabla Producto - Creación y borrado
+	 * 			Métodos de prueba para la tabla Proveedor - Creación y borrado
 	 *****************************************************************/
 	/**
 	 * Método que prueba las operaciones sobre la tabla Producto
@@ -53,7 +57,7 @@ public class ProductoTest
 	 * 2. Listar el contenido de la tabla con 0, 1 y 2 registros insertados
      */
     @Test
-    public void CRDProductoTest()
+    public void CRDProveedorTest()
     {
     	// Probar primero la conexión a la base de datos
     			try
@@ -63,7 +67,7 @@ public class ProductoTest
     			}
     			catch(Exception e)
     			{
-    				log.info("Prueba de CRD de Producto incompleta. No se pudo conectar a la base de datos !!. La excepción generada es: " + e.getClass ().getName ());
+    				log.info("Prueba de CRD de Proveedor incompleta. No se pudo conectar a la base de datos !!. La excepción generada es: " + e.getClass ().getName ());
     				log.info ("La causa es: " + e.getCause ().toString ());
     				
     				String msg = "Prueba de CRD de Producto incompleta. No se pudo conectar a la base de datos !!.\n";
@@ -75,41 +79,29 @@ public class ProductoTest
     	    	try
     			{
     				// Lectura de los productos con la tabla vacía
-    				List <VOProducto> lista = superAndes.darVOProducto();
-    				assertEquals ("No debe haber tipos de bebida creados!!", 0, lista.size ());
+    				List <VOProveedor> lista = superAndes.darVOProveedor();
+    				assertEquals ("No debe haber proveedores creados!!", 0, lista.size ());
 
     				// Lectura de los productos con un producto adicionado
-    				String codigoBarras = "f1f0f1f0f1f0";
-    				int tipoProducto = 11;
-    				String nombreProducto = "Queso Alpina";
-    				String marcaProducto = "Alpina";
-    				String presentacionProducto = "En caja";
-    				String unidadDeMedida = "0.2kg";
-    				double cantidadPresentacion = 1.2;
-    				double pesoDeEmpaque = 0.2;
-    				double volumenEmpaque = 2.3;
+    				int nit = 1;
+    				String nombreProvee = "Bimbo";
+    				double calificacion = 4.5;
     				
-    				VOProducto producto1 = superAndes.adicionarProducto(codigoBarras, tipoProducto, nombreProducto, marcaProducto, presentacionProducto, unidadDeMedida, cantidadPresentacion, pesoDeEmpaque, volumenEmpaque);
-    				lista = superAndes.darVOProducto();
-    				assertEquals ("Debe haber un Producto creado !!", 1, lista.size ());
-    				assertEquals ("El objeto creado y el traido de la BD deben ser iguales !!", producto1, lista.get (0));
+    				VOProveedor proveedor1 = superAndes.adicionarProveedor(nit, nombreProvee, calificacion);
+    				lista = superAndes.darVOProveedor();
+    				assertEquals ("Debe haber un proveedor creado !!", 1, lista.size ());
+    				assertEquals ("El objeto creado y el traido de la BD deben ser iguales !!", proveedor1, lista.get (0));
     				
     				// Lectura de los productos con un producto adicionado
-    				String codigoBarras2 = "g1g0g1g0g1g0";
-    				int tipoProducto2 = 12;
-    				String nombreProducto2 = "Leche Alpina";
-    				String marcaProducto2 = "Alpina";
-    				String presentacionProducto2 = "En bolsa";
-    				String unidadDeMedida2 = "0.5kg";
-    				double cantidadPresentacion2 = 1.5;
-    				double pesoDeEmpaque2 = 0.5;
-    				double volumenEmpaque2 = 2.5;
+    				int nit2 = 2;
+    				String nombreProvee2 = "Bimbo";
+    				double calificacion2 = 4.5;
 
-    				VOProducto producto2 = superAndes.adicionarProducto(codigoBarras2, tipoProducto2, nombreProducto2, marcaProducto2, presentacionProducto2, presentacionProducto2, cantidadPresentacion2, pesoDeEmpaque2, volumenEmpaque2);
-    				lista = superAndes.darVOProducto();
+    				VOProveedor proveedor2 = superAndes.adicionarProveedor(nit2, nombreProvee2, calificacion2);
+    				lista = superAndes.darVOProveedor();
     				assertEquals ("Debe haber dos productos creados !!", 2, lista.size ());
-    				assertTrue ("El primer producto adicionado debe estar en la tabla", producto2.equals (lista.get (0)) || producto2.equals (lista.get (1)));
-    				assertTrue ("El segundo producto adicionado debe estar en la tabla", producto2.equals (lista.get (0)) || producto2.equals (lista.get (1)));
+    				assertTrue ("El primer proveedor adicionado debe estar en la tabla", proveedor2.equals (lista.get (0)) || proveedor2.equals (lista.get (1)));
+    				assertTrue ("El segundo proveedor adicionado debe estar en la tabla", proveedor2.equals (lista.get (0)) || proveedor2.equals (lista.get (1)));
     			}
     			catch (Exception e)
     			{
@@ -127,24 +119,24 @@ public class ProductoTest
     }
     
     /**
-     * Método de prueba de la restricción de unicidad sobre el nombre de Producto
+     * Método de prueba de la restricción de unicidad sobre el nombre de Proveedor
      */
 	@Test
-	public void unicidadProductoTest() 
+	public void unicidadProveedorTest() 
 	{
     	// Probar primero la conexión a la base de datos
 		try
 		{
-			log.info ("Probando la restricción de UNICIDAD del id del producto");
+			log.info ("Probando la restricción de UNICIDAD del id del proveedor");
 			superAndes = new SuperAndes(openConfig (CONFIG_TABLAS_A));
 		}
 		catch (Exception e)
 		{
 //			e.printStackTrace();
-			log.info ("Prueba de UNICIDAD de Producto incompleta. No se pudo conectar a la base de datos !!. La excepción generada es: " + e.getClass ().getName ());
+			log.info ("Prueba de UNICIDAD de Proveedor incompleta. No se pudo conectar a la base de datos !!. La excepción generada es: " + e.getClass ().getName ());
 			log.info ("La causa es: " + e.getCause ().toString ());
 
-			String msg = "Prueba de UNICIDAD de Producto incompleta. No se pudo conectar a la base de datos !!.\n";
+			String msg = "Prueba de UNICIDAD de Proveedor incompleta. No se pudo conectar a la base de datos !!.\n";
 			msg += "Revise el log de SuperAndes y el de datanucleus para conocer el detalle de la excepción";
 			System.out.println (msg);
 			fail (msg);
@@ -154,34 +146,28 @@ public class ProductoTest
 		try
 		{
 			// Lectura de los tipos de bebida con la tabla vacía
-			List <VOProducto> lista = superAndes.darVOProducto();
-			assertEquals ("No debe haber productos creados!!", 0, lista.size ());
+			List <VOProveedor> lista = superAndes.darVOProveedor();
+			assertEquals ("No debe haber proveedores creados!!", 0, lista.size ());
 
 			// Lectura de los productos con un producto adicionado
-			String codigoBarras = "f1f0f1f0f1f0";
-			int tipoProducto = 11;
-			String nombreProducto = "Queso Alpina";
-			String marcaProducto = "Alpina";
-			String presentacionProducto = "En caja";
-			String unidadDeMedida = "0.2kg";
-			double cantidadPresentacion = 1.2;
-			double pesoDeEmpaque = 0.2;
-			double volumenEmpaque = 2.3;
+			int nit = 1;
+			String nombreProvee = "Bimbo";
+			double calificacion = 4.5;
 			
-			VOProducto producto1 = superAndes.adicionarProducto(codigoBarras, tipoProducto, nombreProducto, marcaProducto, presentacionProducto, unidadDeMedida, cantidadPresentacion, pesoDeEmpaque, volumenEmpaque);
-			lista = superAndes.darVOProducto();
-			assertEquals ("Debe haber un producto creado !!", 1, lista.size ());
+			VOProveedor proveedor1 = superAndes.adicionarProveedor(nit, nombreProvee, calificacion);
+			lista = superAndes.darVOProveedor();
+			assertEquals ("Debe haber un proveedor creado !!", 1, lista.size ());
 			
-			VOProducto producto2 = superAndes.adicionarProducto(codigoBarras, tipoProducto, nombreProducto, marcaProducto, presentacionProducto, unidadDeMedida, cantidadPresentacion, pesoDeEmpaque, volumenEmpaque);
-			assertNull ("No puede adicionar dos productos con el mismo nombre !!", producto2);
+			VOProveedor proveedor2 = superAndes.adicionarProveedor(nit, nombreProvee, calificacion);
+			assertNull ("No puede adicionar dos proveedores con el mismo nombre !!", proveedor2);
 		}
 		catch (Exception e) 
 		{
-			String msg = "Error en la ejecución de las pruebas de UNICIDAD sobre la tabla Producto.\n";
+			String msg = "Error en la ejecución de las pruebas de UNICIDAD sobre la tabla Proveedor.\n";
 			msg += "Revise el log de SuperAndes y el de datanucleus para conocer el detalle de la excepción";
 			System.out.println (msg);
 
-    		fail ("Error en las pruebas de UNICIDAD sobre la tabla Producto");
+    		fail ("Error en las pruebas de UNICIDAD sobre la tabla Proveedor");
 		}
 		finally
 		{
@@ -215,8 +201,9 @@ public class ProductoTest
 		catch (Exception e)
 		{
 			log.info ("NO se encontró un archivo de configuración válido");			
-			JOptionPane.showMessageDialog(null, "No se encontró un archivo de configuración de tablas válido: ", "ProductoTest", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "No se encontró un archivo de configuración de tablas válido: ", "ProveedorTest", JOptionPane.ERROR_MESSAGE);
 		}	
         return config;
     }	
+	
 }

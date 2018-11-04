@@ -1,6 +1,11 @@
 package uniandes.isis2304.supermercado.persistencia;
+import java.util.List;
+
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
+
+import uniandes.isis2304.supermercados.negocio.Producto;
+import uniandes.isis2304.supermercados.negocio.SeleccionProductos;
 
 public class SQLSeleccionProductos 
 {
@@ -71,5 +76,18 @@ public class SQLSeleccionProductos
 		Query sql = pm.newQuery(SQL, "UPDATE "+psa.darTablaSeleccionProductos()+" SET cantidad = "+cantidad);
 		sql.setParameters(idProducto, idCarritoCompras, cantidad);
 		return (long) sql.executeUnique();
+	}
+	
+	/**
+	 * Crea y ejecuta la sentencia SQL para encontrar la información de los SELECCIONPRODUCTOS de la 
+	 * base de datos de SuperAndes
+	 * @param pm - El manejador de persistencia
+	 * @return Una lista de objetos SELECCIONPRODUCTOS
+	 */
+	public List<SeleccionProductos> darSeleccionProductos(PersistenceManager pm)
+	{
+		Query q = pm.newQuery(SQL, "SELECT * FROM " + psa.darTablaSeleccionProductos());;
+		q.setResultClass(SeleccionProductos.class);
+		return (List<SeleccionProductos>) q.executeList();
 	}
 }

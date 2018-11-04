@@ -5,18 +5,24 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
 import java.io.FileReader;
+import java.sql.Timestamp;
 import java.util.List;
+
 import javax.swing.JOptionPane;
+
 import org.apache.log4j.Logger;
 import org.junit.Test;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
-import uniandes.isis2304.supermercados.negocio.SuperAndes;
-import uniandes.isis2304.supermercados.negocio.VOProducto;
 
-public class ProductoTest 
+import uniandes.isis2304.supermercados.negocio.SuperAndes;
+import uniandes.isis2304.supermercados.negocio.VOPromocion;
+
+public class PromocionTest 
 {
 	/* ****************************************************************
 	 * 			Constantes
@@ -24,7 +30,7 @@ public class ProductoTest
 	/**
 	 * Logger para escribir la traza de la ejecución
 	 */
-	private static Logger log = Logger.getLogger(ProductoTest.class.getName());
+	private static Logger log = Logger.getLogger(PromocionTest.class.getName());
 	
 	/**
 	 * Ruta al archivo de configuración de los nombres de tablas de la base de datos: La unidad de persistencia existe y el esquema de la BD también
@@ -48,22 +54,23 @@ public class ProductoTest
 	 * 			Métodos de prueba para la tabla Producto - Creación y borrado
 	 *****************************************************************/
 	/**
-	 * Método que prueba las operaciones sobre la tabla Producto
-	 * 1. Adicionar un producto
+	 * Método que prueba las operaciones sobre la tabla Promocion
+	 * 1. Adicionar una Promocion
 	 * 2. Listar el contenido de la tabla con 0, 1 y 2 registros insertados
+	 * 3 Eliminar una promocion por cantidad y por fecha de expedición
      */
     @Test
-    public void CRDProductoTest()
+    public void CRDPromocionTest()
     {
     	// Probar primero la conexión a la base de datos
     			try
     			{
-    				log.info ("Probando las operaciones CRD sobre Producro");
+    				log.info ("Probando las operaciones CRD sobre promocion");
     				superAndes = new SuperAndes (openConfig (CONFIG_TABLAS_A));
     			}
     			catch(Exception e)
     			{
-    				log.info("Prueba de CRD de Producto incompleta. No se pudo conectar a la base de datos !!. La excepción generada es: " + e.getClass ().getName ());
+    				log.info("Prueba de CRD de Promocion incompleta. No se pudo conectar a la base de datos !!. La excepción generada es: " + e.getClass ().getName ());
     				log.info ("La causa es: " + e.getCause ().toString ());
     				
     				String msg = "Prueba de CRD de Producto incompleta. No se pudo conectar a la base de datos !!.\n";
@@ -75,41 +82,42 @@ public class ProductoTest
     	    	try
     			{
     				// Lectura de los productos con la tabla vacía
-    				List <VOProducto> lista = superAndes.darVOProducto();
-    				assertEquals ("No debe haber tipos de bebida creados!!", 0, lista.size ());
+    				List <VOPromocion> lista = superAndes.darVOPromocion();
+    				assertEquals ("No debe haber promociones creadas!!", 0, lista.size ());
 
     				// Lectura de los productos con un producto adicionado
-    				String codigoBarras = "f1f0f1f0f1f0";
-    				int tipoProducto = 11;
-    				String nombreProducto = "Queso Alpina";
-    				String marcaProducto = "Alpina";
-    				String presentacionProducto = "En caja";
-    				String unidadDeMedida = "0.2kg";
-    				double cantidadPresentacion = 1.2;
-    				double pesoDeEmpaque = 0.2;
-    				double volumenEmpaque = 2.3;
+    				int idPromo = 1;
+    				int idSucu = 2;
+    				Timestamp fechaStart = null;
+    				Timestamp fechaFinal = null;
+    				int cantidadPromo = 5;
+    				double precioFinalPromo = 2.2;
     				
-    				VOProducto producto1 = superAndes.adicionarProducto(codigoBarras, tipoProducto, nombreProducto, marcaProducto, presentacionProducto, unidadDeMedida, cantidadPresentacion, pesoDeEmpaque, volumenEmpaque);
-    				lista = superAndes.darVOProducto();
-    				assertEquals ("Debe haber un Producto creado !!", 1, lista.size ());
-    				assertEquals ("El objeto creado y el traido de la BD deben ser iguales !!", producto1, lista.get (0));
+    				VOPromocion promocion1 = superAndes.adicionarPromocion(idPromo, idSucu, fechaStart, fechaFinal, cantidadPromo, precioFinalPromo);
+    				lista = superAndes.darVOPromocion();
+    				assertEquals ("Debe haber una Promocion creada !!", 1, lista.size ());
+    				assertEquals ("El objeto creado y el traido de la BD deben ser iguales !!", promocion1, lista.get (0));
     				
     				// Lectura de los productos con un producto adicionado
-    				String codigoBarras2 = "g1g0g1g0g1g0";
-    				int tipoProducto2 = 12;
-    				String nombreProducto2 = "Leche Alpina";
-    				String marcaProducto2 = "Alpina";
-    				String presentacionProducto2 = "En bolsa";
-    				String unidadDeMedida2 = "0.5kg";
-    				double cantidadPresentacion2 = 1.5;
-    				double pesoDeEmpaque2 = 0.5;
-    				double volumenEmpaque2 = 2.5;
+    				int idPromo2 = 2;
+    				int idSucu2 = 3;
+    				Timestamp fechaStart2 = null;
+    				Timestamp fechaFinal2 = null;
+    				int cantidadPromo2 = 6;
+    				double precioFinalPromo2 = 2.5;
 
-    				VOProducto producto2 = superAndes.adicionarProducto(codigoBarras2, tipoProducto2, nombreProducto2, marcaProducto2, presentacionProducto2, presentacionProducto2, cantidadPresentacion2, pesoDeEmpaque2, volumenEmpaque2);
-    				lista = superAndes.darVOProducto();
-    				assertEquals ("Debe haber dos productos creados !!", 2, lista.size ());
-    				assertTrue ("El primer producto adicionado debe estar en la tabla", producto2.equals (lista.get (0)) || producto2.equals (lista.get (1)));
-    				assertTrue ("El segundo producto adicionado debe estar en la tabla", producto2.equals (lista.get (0)) || producto2.equals (lista.get (1)));
+    				VOPromocion promocion2 = superAndes.adicionarPromocion(idPromo2, idSucu2, fechaStart2, fechaFinal2, cantidadPromo2, precioFinalPromo2);
+    				lista = superAndes.darVOPromocion();
+    				assertEquals ("Debe haber dos promociones creadas !!", 2, lista.size ());
+    				assertTrue ("La primera Promocion adicionada debe estar en la tabla", promocion2.equals (lista.get (0)) || promocion2.equals (lista.get (1)));
+    				assertTrue ("La segunda Promocion adicionada debe estar en la tabla", promocion2.equals (lista.get (0)) || promocion2.equals (lista.get (1)));
+    			
+    				long promoEliminada = superAndes.finalizarPromocionPorCantidad(promocion1.getIdSucursal());
+    				assertEquals("Debe aberse eliminado una promocion!!", 1, promoEliminada);
+    				lista = superAndes.darVOPromocion();
+    				assertEquals("Debe haber una sola promocion!!", 1, lista.size());
+    				assertFalse("La primera promocion no debe estar en la tabla", promocion1.equals(lista.get(0)));
+    				assertTrue("La segunda promocion debe estar en la tabla", promocion2.equals(lista.get(0)));
     			}
     			catch (Exception e)
     			{
@@ -130,21 +138,21 @@ public class ProductoTest
      * Método de prueba de la restricción de unicidad sobre el nombre de Producto
      */
 	@Test
-	public void unicidadProductoTest() 
+	public void unicidadPromocionTest() 
 	{
     	// Probar primero la conexión a la base de datos
 		try
 		{
-			log.info ("Probando la restricción de UNICIDAD del id del producto");
+			log.info ("Probando la restricción de UNICIDAD del identificador de la promocion");
 			superAndes = new SuperAndes(openConfig (CONFIG_TABLAS_A));
 		}
 		catch (Exception e)
 		{
 //			e.printStackTrace();
-			log.info ("Prueba de UNICIDAD de Producto incompleta. No se pudo conectar a la base de datos !!. La excepción generada es: " + e.getClass ().getName ());
+			log.info ("Prueba de UNICIDAD de Promocion incompleta. No se pudo conectar a la base de datos !!. La excepción generada es: " + e.getClass ().getName ());
 			log.info ("La causa es: " + e.getCause ().toString ());
 
-			String msg = "Prueba de UNICIDAD de Producto incompleta. No se pudo conectar a la base de datos !!.\n";
+			String msg = "Prueba de UNICIDAD de Promocion incompleta. No se pudo conectar a la base de datos !!.\n";
 			msg += "Revise el log de SuperAndes y el de datanucleus para conocer el detalle de la excepción";
 			System.out.println (msg);
 			fail (msg);
@@ -154,34 +162,31 @@ public class ProductoTest
 		try
 		{
 			// Lectura de los tipos de bebida con la tabla vacía
-			List <VOProducto> lista = superAndes.darVOProducto();
-			assertEquals ("No debe haber productos creados!!", 0, lista.size ());
+			List <VOPromocion> lista = superAndes.darVOPromocion();
+			assertEquals ("No debe haber promociones creadas!!", 0, lista.size ());
 
 			// Lectura de los productos con un producto adicionado
-			String codigoBarras = "f1f0f1f0f1f0";
-			int tipoProducto = 11;
-			String nombreProducto = "Queso Alpina";
-			String marcaProducto = "Alpina";
-			String presentacionProducto = "En caja";
-			String unidadDeMedida = "0.2kg";
-			double cantidadPresentacion = 1.2;
-			double pesoDeEmpaque = 0.2;
-			double volumenEmpaque = 2.3;
+			int idPromo = 1;
+			int idSucu = 2;
+			Timestamp fechaStart = null;
+			Timestamp fechaFinal = null;
+			int cantidadPromo = 5;
+			double precioFinalPromo = 2.2;
 			
-			VOProducto producto1 = superAndes.adicionarProducto(codigoBarras, tipoProducto, nombreProducto, marcaProducto, presentacionProducto, unidadDeMedida, cantidadPresentacion, pesoDeEmpaque, volumenEmpaque);
-			lista = superAndes.darVOProducto();
+			VOPromocion promocion1 = superAndes.adicionarPromocion(idPromo, idSucu, fechaStart, fechaFinal, cantidadPromo, precioFinalPromo);
+			lista = superAndes.darVOPromocion();
 			assertEquals ("Debe haber un producto creado !!", 1, lista.size ());
 			
-			VOProducto producto2 = superAndes.adicionarProducto(codigoBarras, tipoProducto, nombreProducto, marcaProducto, presentacionProducto, unidadDeMedida, cantidadPresentacion, pesoDeEmpaque, volumenEmpaque);
-			assertNull ("No puede adicionar dos productos con el mismo nombre !!", producto2);
+			VOPromocion promocion2 = superAndes.adicionarPromocion(idPromo, idSucu, fechaStart, fechaFinal, cantidadPromo, precioFinalPromo);
+			assertNull ("No puede adicionar dos productos con el mismo nombre !!", promocion2);
 		}
 		catch (Exception e) 
 		{
-			String msg = "Error en la ejecución de las pruebas de UNICIDAD sobre la tabla Producto.\n";
+			String msg = "Error en la ejecución de las pruebas de UNICIDAD sobre la tabla Promocion.\n";
 			msg += "Revise el log de SuperAndes y el de datanucleus para conocer el detalle de la excepción";
 			System.out.println (msg);
 
-    		fail ("Error en las pruebas de UNICIDAD sobre la tabla Producto");
+    		fail ("Error en las pruebas de UNICIDAD sobre la tabla Promocion");
 		}
 		finally
 		{
@@ -215,7 +220,7 @@ public class ProductoTest
 		catch (Exception e)
 		{
 			log.info ("NO se encontró un archivo de configuración válido");			
-			JOptionPane.showMessageDialog(null, "No se encontró un archivo de configuración de tablas válido: ", "ProductoTest", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "No se encontró un archivo de configuración de tablas válido: ", "PromocionTest", JOptionPane.ERROR_MESSAGE);
 		}	
         return config;
     }	

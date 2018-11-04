@@ -907,7 +907,7 @@ public class PersistenciaSuperAndes
 	 * @param pFechaVisista
 	 * @return El objeto CarritoCompras adicionado. null si ocurre alguna Excepci�n
 	 */
-	public long solicitarCarritoCompras(int pIdSucursal, int pIdCliente, String pDisponibilidad, String pAbandonado, Timestamp pFechaVisista)
+	public long solicitarCarritoCompras(int pIdSucursal, int pIdCliente, Timestamp pFechaVisista)
 	{
 		PersistenceManager pm = pmf.getPersistenceManager();
 		Transaction tx = pm.currentTransaction();
@@ -915,6 +915,8 @@ public class PersistenciaSuperAndes
 		{
 			tx.begin();
 			int idCarrito = (int) nextval();
+			String pDisponibilidad = "SI";
+			String pAbandonado = "NO";
 			long resp = sqlCarritoCompras.solicitarCarritoCompras(pm, idCarrito, pIdSucursal, pIdCliente, pDisponibilidad, pAbandonado, pFechaVisista);
 			tx.commit();
 			return resp;
@@ -1080,7 +1082,7 @@ public class PersistenciaSuperAndes
 	 * Adiciona entradas al log de la aplicaci�n
 	 * @return El objeto Albergan actualizado. null si ocurre alguna Excepci�n
 	 */
-	public long recolectarProductosAbandonados(int pIdSucursal, int pIdCarrito, int pIdProducto, int pIdEstante, int pCantidad)
+	public long recolectarProductosAbandonados(int pIdSucursal, int pIdProducto, int pIdEstante, int pCantidad)
 	{
 		PersistenceManager pm = pmf.getPersistenceManager();
 		Transaction tx = pm.currentTransaction();

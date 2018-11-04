@@ -187,10 +187,9 @@ public class SuperAndes
 		return resp;
 	}
 
-	public long solicitarCarritoCompras(int pIdSucursal, int pIdCliente, String pDisponibilidad, String pAbandonado,
-			Timestamp pFechaVisista)
+	public long solicitarCarritoCompras(int pIdSucursal, int pIdCliente, Timestamp pFechaVisista)
 	{
-		long resp = psa.solicitarCarritoCompras(pIdSucursal, pIdCliente, pDisponibilidad, pAbandonado, pFechaVisista);
+		long resp = psa.solicitarCarritoCompras(pIdSucursal, pIdCliente, pFechaVisista);
 		return resp;
 	}
 

@@ -501,7 +501,7 @@ public class InterfazSupermercadoApp extends JFrame implements ActionListener
 
 				Timestamp fecha = new Timestamp(System.currentTimeMillis());
 
-				long tb = superAndes.solicitarCarritoCompras(idCliente, idSucursal, "NO", "NO", fecha);
+				long tb = superAndes.solicitarCarritoCompras(idCliente, idSucursal, fecha);
 
 				if (tb == -1)
 

@@ -13,8 +13,6 @@ import org.apache.log4j.Logger;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
-import oracle.net.aso.v;
 import uniandes.isis2304.supermercados.negocio.*;
 public class PersistenciaSuperAndes 
 {
@@ -996,6 +994,7 @@ public class PersistenciaSuperAndes
         	return -1;
 		}
 	}
+	
 	
 	/**
 	 * RF14.1

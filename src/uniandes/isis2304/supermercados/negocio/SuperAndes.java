@@ -276,6 +276,78 @@ public class SuperAndes
 		return resp;
 	}
 	
+	public List<Object []> darConsumoSuperAndes(String producto, Timestamp fecha1, Timestamp fecha2)
+	{
+		log.info("Listando los clientes...");
+		List<Object []> tuplas = psa.darConsumoEnSuperAndes(producto, fecha1, fecha2);
+		log.info("Listado de clientes: Listo");
+		return tuplas;
+	}
+	
+	public List<Object []> darNoConsumoSuperAndes(String producto, Timestamp fecha1, Timestamp fecha2)
+	{
+		log.info("Listando los clientes...");
+		List<Object []> tuplas = psa.darNoConsumoEnSuperAndes(producto, fecha1, fecha2);
+		log.info("Listado de clientes: Listo");
+		return tuplas;
+	}
+	
+	public List<Object[]> darProductoMasVendido(Timestamp fecha1, Timestamp fecha2)
+	{
+		log.info("Listando productos...");
+		List<Object[]> tuplas = psa.darProductosMasVendidosSemanal(fecha1, fecha2);
+		log.info("Obtenido el producto: Listo");
+		return tuplas;
+	}
+	
+	public List<Object[]> darProductoMenosVendido(Timestamp fecha1, Timestamp fecha2)
+	{
+		log.info("Listando productos...");
+		List<Object[]> tuplas = psa.darProductosMenosVendidosSemanal(fecha1, fecha2);
+		log.info("Obtenido el producto: Listo");
+		return tuplas;
+	}
+	
+	public List<Object[]> darProveedorMasSolicitado(Timestamp fecha1, Timestamp fecha2)
+	{
+		log.info("Listando proveedores...");
+		List<Object[]> tuplas = psa.darProveedorMasSolicitadoSemanal(fecha1, fecha2);
+		log.info("Obtenido el proveedor: Listo");
+		return tuplas;
+	}
+	
+	public List<Object[]> darProveedorMenosSolicitado(Timestamp fecha1, Timestamp fecha2)
+	{
+		log.info("Listando proveedores...");
+		List<Object[]> tuplas = psa.darProveedorMenosSolicitadoSemanal(fecha1, fecha2);
+		log.info("Obtenido el proveedor: Listo");
+		return tuplas;
+	}
+	
+	public List<Object[]> darClientesConComprasMensuales()
+	{
+		log.info("Listando clientes...");
+		List<Object[]> tuplas = psa.darClientesConComprasMensuales();
+		log.info("Listado de clientes: Listo");
+		return tuplas;
+	}
+	
+	public List<Object[]> darClientesConComprasCostosas()
+	{
+		log.info("Listando clientes...");
+		List<Object[]> tuplas = psa.darClientesConComprasCostosas();
+		log.info("Listado de clientes: Listo");
+		return tuplas;
+	}
+	
+	public List<Object[]> darClientesConComprasTecnologicas()
+	{
+		log.info("Listando clientes...");
+		List<Object[]> tuplas = psa.darClientesConComprasTecnologicas();
+		log.info("Listado de clientes: Listo");
+		return tuplas;
+	}
+	
 	/**
 	 * Elimina todas las tuplas de todas las tablas de la base de datos de SuperAndes
 	 * @return Un arreglo con 17 números que indican el número de tuplas borradas en las tablas

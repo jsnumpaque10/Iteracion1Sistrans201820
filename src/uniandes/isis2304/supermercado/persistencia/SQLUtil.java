@@ -17,7 +17,7 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
 /**
- * Clase que encapsula los métodos que hacen acceso a la base de datos para el concepto BAR de Parranderos
+ * Clase que encapsula los métodos que hacen acceso a la base de datos de SuperAndes
  * Nótese que es una clase que es sólo conocida en el paquete de persistencia
  * 
  * @author Germán Bravo

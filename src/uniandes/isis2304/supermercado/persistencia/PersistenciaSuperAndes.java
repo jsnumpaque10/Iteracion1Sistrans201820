@@ -1,5 +1,7 @@
 package uniandes.isis2304.supermercado.persistencia;
+import java.sql.Time;
 import java.sql.Timestamp;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -1168,11 +1170,247 @@ public class PersistenciaSuperAndes
 	}
 	
 	/**
+	 * RFC10
+	 * @param pNombreProducto
+	 * @param pFechaInicial
+	 * @param pFechaFinal
+	 * @return
+	 */
+	public List<Object[]> darConsumoEnSuperAndes(String pNombreProducto, Timestamp pFechaInicial, Timestamp pFechaFinal)
+	{
+		List<Object[]> resp = new LinkedList<Object []>();
+		List<Object> tuplas = sqlSucursal.consultarConsumoEnSuperAndes(pmf.getPersistenceManager(), pNombreProducto, pFechaInicial, pFechaFinal);
+		for(Object tupla : tuplas)
+		{
+			Object [] datos = (Object []) tupla;
+			int idCliente = (int) datos[0];
+			String nombreCliente = (String) datos[1];
+			String correoCliente = (String) datos[2];
+			String ciudadCliente = (String) datos[3];
+			String direccionCliente = (String) datos[4];
+			
+			Object [] resp2 = new Object[1];
+			resp2 [0] = new Cliente(idCliente, nombreCliente, correoCliente, ciudadCliente, direccionCliente);
+			
+			resp.add(resp2);
+		}
+		return resp;
+	}
+	
+	/**
+	 * RFC11
+	 * @param pNombreProducto
+	 * @param pFechaInicial
+	 * @param pFechaFinal
+	 * @return
+	 */
+	public List<Object[]> darNoConsumoEnSuperAndes(String pNombreProducto, Timestamp pFechaInicial, Timestamp pFechaFinal)
+	{
+		List<Object[]> resp = new LinkedList<Object []>();
+		List<Object> tuplas = sqlSucursal.consultarNoConsumoEnSuperAndes(pmf.getPersistenceManager(), pNombreProducto, pFechaInicial, pFechaFinal);
+		for(Object tupla : tuplas)
+		{
+			Object [] datos = (Object []) tupla;
+			int idCliente = (int) datos[0];
+			String nombreCliente = (String) datos[1];
+			String correoCliente = (String) datos[2];
+			String ciudadCliente = (String) datos[3];
+			String direccionCliente = (String) datos[4];
+			
+			Object [] resp2 = new Object[1];
+			resp2 [0] = new Cliente(idCliente, nombreCliente, correoCliente, ciudadCliente, direccionCliente);
+			
+			resp.add(resp2);
+		}
+		return resp;
+	}
+	
+	/**
+	 * RFC12.1
+	 * @param pFechaInical
+	 * @param pFechaFinal
+	 * @return
+	 */
+	public List<Object[]> darProductosMasVendidosSemanal(Timestamp pFechaInical, Timestamp pFechaFinal)
+	{
+		List<Object[]> resp = new LinkedList<Object[]>();
+		List<Object> tuplas = sqlSucursal.consultarProductosMasVendidosSemanal(pmf.getPersistenceManager(), pFechaInical, pFechaFinal);
+		for(Object tupla : tuplas)
+		{
+			Object [] datos = (Object[]) tupla;
+			int idProducto = (int) datos[0];
+			String nombreProducto = (String) datos[1];
+			int cuentaProductos = (int) datos[2];
+			
+			Object [] resp2 = new Object [3];
+			resp2[0] = idProducto;
+			resp2[1] = nombreProducto;
+			resp2[2] = cuentaProductos;
+			
+			resp.add(datos);
+		}
+		return resp;
+	}
+	
+	/**
+	 * RFC12.2
+	 * @param pFechaInicial
+	 * @param pFechaFinal
+	 * @return
+	 */
+	public List<Object[]> darProductosMenosVendidosSemanal(Timestamp pFechaInicial, Timestamp pFechaFinal)
+	{
+		List<Object[]> resp = new LinkedList<Object[]>();
+		List<Object> tuplas = sqlSucursal.consultarProductosMenosVendidosSemanal(pmf.getPersistenceManager(), pFechaInicial, pFechaFinal);
+		for(Object tupla : tuplas)
+		{
+			Object [] datos = (Object[]) tupla;
+			int idProducto = (int) datos[0];
+			String nombreProducto = (String) datos[1];
+			int cuentaProductos = (int) datos[2];
+			
+			Object [] resp2 = new Object [3];
+			resp2[0] = idProducto;
+			resp2[1] = nombreProducto;
+			resp2[2] = cuentaProductos;
+			
+			resp.add(datos);
+		}
+		return resp;
+	}
+	
+	/**
+	 * RFC12.3
+	 * @param pFechaInicial
+	 * @param pFechaFinal
+	 * @return
+	 */
+	public List<Object[]> darProveedorMasSolicitadoSemanal(Timestamp pFechaInicial, Timestamp pFechaFinal)
+	{
+		List<Object[]> resp = new LinkedList<Object[]>();
+		List<Object> tuplas = sqlSucursal.consultarProveedorMasSolicitadoSemanal(pmf.getPersistenceManager(), pFechaInicial, pFechaFinal);
+		for(Object tupla : tuplas)
+		{
+			Object [] datos = (Object[]) tupla;
+			int idProveedor = (int) datos[0];
+			String nombreProveedor = (String) datos[1];
+			double calificacion = (double) datos[2];
+			int cantidadPedidos = (int) datos[3];
+			
+			Object [] resp2 = new Object [2];
+			resp2[0] = new Proveedor(idProveedor, nombreProveedor, calificacion);
+			resp2[1] = cantidadPedidos;
+			
+			resp.add(resp2);
+		}
+		return resp;
+	}
+	
+	/**
+	 * RFC12.4
+	 * @param pFechaInicial
+	 * @param pFechaFinal
+	 * @return
+	 */
+	public List<Object[]> darProveedorMenosSolicitadoSemanal(Timestamp pFechaInicial, Timestamp pFechaFinal)
+	{
+		List<Object[]> resp = new LinkedList<Object[]>();
+		List<Object> tuplas = sqlSucursal.consultarProveedorMenosSolicitadoSemanal(pmf.getPersistenceManager(), pFechaInicial, pFechaFinal);
+		for(Object tupla : tuplas)
+		{
+			Object [] datos = (Object[]) tupla;
+			int idProveedor = (int) datos[0];
+			String nombreProveedor = (String) datos[1];
+			double calificacion = (double) datos[2];
+			int cantidadPedidos = (int) datos[3];
+			
+			Object [] resp2 = new Object [2];
+			resp2[0] = new Proveedor(idProveedor, nombreProveedor, calificacion);
+			resp2[1] = cantidadPedidos;
+			
+			resp.add(resp2);
+		}
+		return resp;
+	}
+	
+	/**
+	 * RFC13.1
+	 * @return
+	 */
+	public List<Object[]> darClientesConComprasMensuales()
+	{
+		List<Object[]> resp = new LinkedList<Object []>();
+		List<Object> tuplas = sqlSucursal.consularClientesConComprasMensuales(pmf.getPersistenceManager());
+		for(Object tupla : tuplas)
+		{
+			Object [] datos = (Object[]) tupla;
+			int idCliente = (int) datos[0];
+			String nombreCliente = (String) datos[1];
+			String correoCliente = (String) datos[2];
+			String ciudadCliente = (String) datos[3];
+			String direccionCliente = (String) datos[4];
+			
+			Object[] resp2 = new Object [1];
+			resp2[0] = new Cliente(idCliente, nombreCliente, correoCliente, ciudadCliente, direccionCliente);
+			resp.add(resp2);
+		}
+		return resp;
+	}
+	
+	/**
+	 * RFC13.2
+	 * @return
+	 */
+	public List<Object[]> darClientesConComprasCostosas()
+	{
+		List<Object[]> resp = new LinkedList<Object []>();
+		List<Object> tuplas = sqlSucursal.consultarClientesConComprasCostosas(pmf.getPersistenceManager());
+		for(Object tupla : tuplas)
+		{
+			Object [] datos = (Object[]) tupla;
+			int idCliente = (int) datos[0];
+			String nombreCliente = (String) datos[1];
+			String correoCliente = (String) datos[2];
+			String ciudadCliente = (String) datos[3];
+			String direccionCliente = (String) datos[4];
+			
+			Object[] resp2 = new Object [1];
+			resp2[0] = new Cliente(idCliente, nombreCliente, correoCliente, ciudadCliente, direccionCliente);
+			resp.add(resp2);
+		}
+		return resp;
+	}
+	
+	/**
+	 * RFC13.3
+	 * @return
+	 */
+	public List<Object[]> darClientesConComprasTecnologicas()
+	{
+		List<Object[]> resp = new LinkedList<Object []>();
+		List<Object> tuplas = sqlSucursal.consultarClientesConComprasTecnologia(pmf.getPersistenceManager());
+		for(Object tupla : tuplas)
+		{
+			Object [] datos = (Object[]) tupla;
+			int idCliente = (int) datos[0];
+			String nombreCliente = (String) datos[1];
+			String correoCliente = (String) datos[2];
+			String ciudadCliente = (String) datos[3];
+			String direccionCliente = (String) datos[4];
+			
+			Object[] resp2 = new Object [1];
+			resp2[0] = new Cliente(idCliente, nombreCliente, correoCliente, ciudadCliente, direccionCliente);
+			resp.add(resp2);
+		}
+		return resp;
+	}
+	
+	/**
 	 * Elimina todas las tuplas de todas las tablas de la base de datos de SuperAndes
 	 * Crea y ejecuta las sentencias SQL para cada tabla de la base de datos - EL ORDEN ES IMPORTANTE 
 	 * @return Un arreglo con 17 números que indican el número de tuplas borradas en las tablas ALBERGAN, ALMACENAN, BODEGA,
 	 * CARRITOCOMPRAS, CLIENTE, ESTANTE, FACTURA, INVENTARIO, PEDIDO, PRODUCTO, PROMOCION, PROMOCIONES, PROVEEDOR, PROVEEN,
-	 * SELECCIONPRODUCTOS, SUCURSAL, RIPOPRODUCTO respectivamente
+	 * SELECCIONPRODUCTOS, SUCURSAL, TIPOPRODUCTO respectivamente
 	 */
 	public long[] limpiarSuperAndes()
 	{
